@@ -775,9 +775,15 @@ Normal topics are served only by a single broker, which limits the maximum throu
 
 A partitioned topic is implemented as N internal topics, where N is the number of partitions. When publishing messages to a partitioned topic, each message is routed to one of several brokers. The distribution of partitions across brokers is handled automatically by Pulsar.
 
-The diagram below illustrates this:
+The diagrams below illustrate this:
 
-![](/assets/partitioning.png)
+Routing mode determines which internal topic is published to.
+
+![](/assets/routing-mode.svg)
+
+Subscription mode determines which consumer(s) a message should be delivered to. 
+
+![](/assets/subscription-mode.svg)
 
 The **Topic1** topic has five partitions (**P0** through **P4**) split across three brokers. Because there are more partitions than brokers, two brokers handle two partitions a piece, while the third handles only one (again, Pulsar handles this distribution of partitions automatically).
 

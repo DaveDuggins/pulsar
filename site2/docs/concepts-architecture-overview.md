@@ -14,7 +14,7 @@ In a Pulsar cluster:
 
 The diagram below illustrates a Pulsar cluster:
 
-![Pulsar architecture diagram](/assets/pulsar-system-architecture.png)
+![Pulsar architecture diagram](/assets/pulsar-system-architecture.svg)
 
 At the broader instance level, an instance-wide ZooKeeper cluster called the configuration store handles coordination tasks involving multiple clusters, for example, [geo-replication](concepts-replication.md).
 
