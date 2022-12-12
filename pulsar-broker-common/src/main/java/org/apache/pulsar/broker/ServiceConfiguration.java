@@ -1767,6 +1767,12 @@ public class ServiceConfiguration implements PulsarConfiguration {
 
     @FieldContext(
             category = CATEGORY_STORAGE_BK,
+            doc = "whether limit per_channel_bookie_client metrics of bookkeeper client stats"
+    )
+    private boolean bookkeeperClientLimitStatsLogging = false;
+
+    @FieldContext(
+            category = CATEGORY_STORAGE_BK,
             doc = "Throttle value for bookkeeper client"
     )
     private int bookkeeperClientThrottleValue = 0;
@@ -1914,7 +1920,7 @@ public class ServiceConfiguration implements PulsarConfiguration {
             dynamic = true,
             doc = "The type of topic that is allowed to be automatically created.(partitioned/non-partitioned)"
     )
-    private String allowAutoTopicCreationType = "non-partitioned";
+    private TopicType allowAutoTopicCreationType = TopicType.NON_PARTITIONED;
     @FieldContext(
         category = CATEGORY_STORAGE_ML,
         dynamic = true,
@@ -3201,7 +3207,7 @@ public class ServiceConfiguration implements PulsarConfiguration {
     }
 
     public boolean isDefaultTopicTypePartitioned() {
-        return TopicType.PARTITIONED.toString().equals(allowAutoTopicCreationType);
+        return TopicType.PARTITIONED.equals(allowAutoTopicCreationType);
     }
 
     public int getBrokerDeleteInactiveTopicsMaxInactiveDurationSeconds() {
