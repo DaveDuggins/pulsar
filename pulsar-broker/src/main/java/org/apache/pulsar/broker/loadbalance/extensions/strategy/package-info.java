@@ -16,11 +16,4 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.pulsar.io.hdfs2;
-
-/**
- * An enumeration of compression codecs available for HDFS.
- */
-public enum Compression {
-    BZIP2, DEFLATE, GZIP, LZ4, SNAPPY, ZSTANDARD
-}
+package org.apache.pulsar.broker.loadbalance.extensions.strategy;
