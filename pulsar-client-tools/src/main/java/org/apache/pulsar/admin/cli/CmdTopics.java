@@ -261,6 +261,8 @@ public class CmdTopics extends CmdBase {
         jcommander.addCommand("get-schema-validation-enforce", new GetSchemaValidationEnforced());
         jcommander.addCommand("set-schema-validation-enforce", new SetSchemaValidationEnforced());
 
+        jcommander.addCommand("trim-topic", new TrimTopic());
+
         initDeprecatedCommands();
     }
 
@@ -1077,7 +1079,7 @@ public class CmdTopics extends CmdBase {
             String topic = validateTopicName(params);
             Map<String, String> result = getTopics().getSubscriptionProperties(topic, subscriptionName);
             // Ensure we are using JSON and not Java toString()
-            System.out.println(ObjectMapperFactory.getThreadLocal().writeValueAsString(result));
+            System.out.println(ObjectMapperFactory.getMapper().writer().writeValueAsString(result));
         }
     }
 
@@ -1169,7 +1171,7 @@ public class CmdTopics extends CmdBase {
             Map<Integer, MessageId> messageIds = getTopics().terminatePartitionedTopic(persistentTopic);
             for (Map.Entry<Integer, MessageId> entry: messageIds.entrySet()) {
                 String topicName = persistentTopic + "-partition-" + entry.getKey();
-                System.out.println("Topic " + topicName +  " succesfully terminated at " + entry.getValue());
+                System.out.println("Topic " + topicName +  " successfully terminated at " + entry.getValue());
             }
         }
     }
@@ -3109,6 +3111,17 @@ public class CmdTopics extends CmdBase {
         void run() throws PulsarAdminException {
             String topic = validateTopicName(params);
             getAdmin().topics().setSchemaValidationEnforced(topic, enable);
+        }
+    }
+    @Parameters(commandDescription = "Trim a topic")
+    private class TrimTopic extends CliCommand {
+        @Parameter(description = "persistent://tenant/namespace/topic", required = true)
+        private java.util.List<String> params;
+
+        @Override
+        void run() throws PulsarAdminException {
+            String topic = validateTopicName(params);
+            getAdmin().topics().trimTopic(topic);
         }
     }
 }

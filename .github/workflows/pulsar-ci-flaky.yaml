@@ -22,6 +22,8 @@ on:
   pull_request:
     branches:
       - master
+  schedule:
+    - cron: '0 12 * * *'
   workflow_dispatch:
 
 concurrency:
@@ -39,6 +41,7 @@ jobs:
   preconditions:
     name: Preconditions
     runs-on: ubuntu-20.04
+    if: (github.event_name != 'schedule') || (github.repository == 'apache/pulsar')
     outputs:
       docs_only: ${{ steps.check_changes.outputs.docs_only }}
       changed_tests: ${{ steps.changes.outputs.tests_files }}
@@ -96,6 +99,7 @@ jobs:
 
       - name: Cache local Maven repository
         uses: actions/cache@v3
+        timeout-minutes: 5
         with:
           path: |
             ~/.m2/repository/*/*/*
@@ -125,6 +129,24 @@ jobs:
       - name: Aggregates all test reports to ./test-reports and ./surefire-reports directories
         if: ${{ always() }}
         uses: ./.github/actions/copy-test-reports
+
+      - name: Create Jacoco reports
+        run: |
+          $GITHUB_WORKSPACE/build/pulsar_ci_tool.sh create_test_coverage_report 
+          cd $GITHUB_WORKSPACE/target
+          zip -qr jacoco_test_coverage_report_flaky.zip jacoco_test_coverage_report
+
+      - name: Upload Jacoco report files to build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Jacoco-coverage-report-flaky
+          path: target/jacoco_test_coverage_report_flaky.zip
+          retention-days: 3
+
+      - name: Upload to Codecov
+        uses: ./.github/actions/upload-coverage
+        with:
+          flags: unittests
 
       - name: Publish Test Report
         uses: apache/pulsar-test-infra/action-junit-report@master

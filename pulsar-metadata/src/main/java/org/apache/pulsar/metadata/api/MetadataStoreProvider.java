@@ -16,7 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-/**
- * Pulsar Client API.
- */
-package org.apache.pulsar.broker.cache;
+package org.apache.pulsar.metadata.api;
+
+public interface MetadataStoreProvider {
+
+
+    /**
+     * Scheme of the urls that MetadataSores provided by this object can handle.
+     */
+    String urlScheme();
+
+    /**
+     * Creates a new MetadataStore.
+     * @throws MetadataStoreException if any exception happens while creating the metadata store.
+     */
+    MetadataStore create(
+            String metadataURL,
+            MetadataStoreConfig metadataStoreConfig,
+            boolean enableSessionWatcher) throws MetadataStoreException;
+}
